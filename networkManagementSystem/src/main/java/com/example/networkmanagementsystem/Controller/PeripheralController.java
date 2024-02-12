@@ -38,12 +38,6 @@ public class PeripheralController {
         return ResponseEntity.ok(peripheral);
     }
 
-    //Create a new peripheral
-//    @PostMapping("/createPeripheral")
-//    public Peripheral createPeripheral(@RequestBody @Valid Peripheral peripheral){
-//        return peripheralRepository.save(peripheral);
-//    }
-
     @PostMapping("/createPeripheral/{serialNumber}")
     public ResponseEntity<?> createPeripheral(@PathVariable String serialNumber, @RequestBody @Valid Peripheral peripheral){
         Gateway gateway = gatewayRepository.findById(serialNumber)
@@ -53,6 +47,7 @@ public class PeripheralController {
             return ResponseEntity.badRequest().body("Gateway has reached the limit of 10.");
         }
 
+        peripheral.getGateway().setSerialNumber(serialNumber);
         peripheral.setGateway(gateway);
         Peripheral savedPeripheral = peripheralRepository.save(peripheral);
         peripherals.add(savedPeripheral);
